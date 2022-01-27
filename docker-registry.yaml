@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docker-registry
+  labels:
+    app: docker-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: docker-registry
+  template:
+    metadata:
+      labels:
+        app: docker-registry
+    spec:
+      hostNetwork: true
+      containers:
+        - name: docker-registry
+          image: registry:2.7
+          env:
+            - name: REGISTRY_HTTP_TLS_CERTIFICATE
+              value: "/certs/k8s-m1.igtm.link.fullchain.crt"
+            - name: REGISTRY_HTTP_TLS_KEY
+              value: "/certs/k8s-m1.igtm.link.privkey.key"
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: certs
+              mountPath: /certs
+            - name: registry
+              mountPath: /var/lib/registry
+      volumes:
+        - name: registry
+          hostPath:
+            type: Directory
+            path: /var/lib/registry
+        - name: certs
+          hostPath:
+            type: Directory
+            path: /etc/certs

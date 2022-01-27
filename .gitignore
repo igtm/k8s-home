@@ -1,0 +1,4 @@
+check-circleci/.idea
+.vscode
+.env
+tmp
