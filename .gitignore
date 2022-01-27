@@ -1,4 +1,4 @@
-check-circleci/.idea
+.idea
 .vscode
 .env
 tmp
