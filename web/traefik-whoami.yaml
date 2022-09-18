@@ -15,7 +15,7 @@ metadata:
     name: whoami
 
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: traefiklabs
@@ -59,14 +59,7 @@ spec:
     - host: "k8s-m1.igtm.link"
       http:
         paths:
-          - path: /bar
-            pathType: Prefix
-            backend:
-              service:
-                name: whoami
-                port:
-                  number: 80
-          - path: /foo
+          - path: /
             pathType: Prefix
             backend:
               service:
