@@ -1,0 +1,67 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: metabase
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: metabase
+  namespace: metabase
+  labels:
+    app: metabaseapp
+    name: metabase
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metabaseapp
+      task: metabase
+  template:
+    metadata:
+      labels:
+        app: metabaseapp
+        task: metabase
+    spec:
+      containers:
+        - name: metabase
+          image: bobblybook/metabase:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metabase
+  namespace: metabase
+
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
+  selector:
+    app: metabaseapp
+    task: metabase
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: metabase
+  namespace: metabase
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+
+spec:
+  rules:
+    - host: "metabase.k8s-m1.igtm.link"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: metabase
+                port:
+                  number: 80

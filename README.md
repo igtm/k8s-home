@@ -26,3 +26,6 @@ kubectl apply -f docker-registry.yaml
 ### memo
 
 - Let's encrypt 製の鍵じゃないとダメだった
+- Traefik Ingress Controller/Klipper Load Balancer が k3s にデフォで入っている
+  - https://rancher.com/docs/k3s/latest/en/networking/
+  - https://dev.to/bbende/k3s-on-raspberry-pi-ingress-lf4?signin=true
