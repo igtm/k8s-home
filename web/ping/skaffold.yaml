@@ -1,0 +1,58 @@
+apiVersion: skaffold/v2beta29
+kind: Config
+metadata:
+  name: ping
+build:
+  tagPolicy:
+    gitCommit:
+      prefix: "dev-"
+      ignoreChanges: false # commit されてなかったら `-dirty` をタグのおしりにつけるがそれを省くか
+  artifacts:
+    - image: k8s-m1.igtm.link:5000/ping
+      custom:
+        buildCommand: sh ./build-image.sh
+        dependencies:
+          dockerfile:
+            path: ./Dockerfile
+deploy:
+  helm:
+    # なかったら作る https://github.com/GoogleContainerTools/skaffold/issues/4482#issuecomment-673938306
+    flags:
+      install: ["--create-namespace"]
+    releases:
+      - name: ping
+        chartPath: helm
+        valuesFiles: [helm/values.yaml]
+        namespace: tmp-ping-igtm # よしなに自分環境を作れば良さそう
+        # IMPORTANT: To get Skaffold to work with Helm, the image key must be configured in the skaffold.yaml.
+        # build.artifacts[].image と deploy.helm.releases[].artifactOverrides.image が一致しないと
+        # skaffoldからhelmのimagekeyをtrackできない
+        artifactOverrides:
+          image: k8s-m1.igtm.link:5000/ping # 必須 これないとimagetagがhelmから取れない
+        # https://skaffold.dev/docs/pipeline-stages/deployers/helm/#helm-strategy-split-repository-and-tag
+        imageStrategy:
+          helm: {}
+  statusCheckDeadlineSeconds: 300
+
+# localhost
+portForward:
+  - resourceType: service
+    resourceName: ping
+    port: 80
+
+profiles:
+  - name: prd
+    patches:
+      - op: replace
+        path: /build/tagPolicy/gitCommit/prefix
+        value: prd-
+      - op: add
+        path: /deploy/helm/releases/0/valuesFiles
+        value:
+          - ./helm/values/prd.yaml
+      - op: replace
+        path: /deploy/helm/releases/0/namespace
+        value: default
+      - op: replace
+        path: /deploy/helm/flags
+        value: {}

@@ -22,6 +22,21 @@ kubectl apply -f docker-registry.yaml
 - 証明書ファイルは[Let's Encrypt製](https://numb86-tech.hatenablog.com/entry/2020/08/04/223754)
 - [registry dockerを使用](https://qiita.com/yuyakato/items/c5b1b1293c5879e231ab)
 
+### 証明書の更新(3ヶ月おき)
+
+```shell
+sudo certbot certonly --manual -d k8s-m1.igtm.link --preferred-challenges dns-01
+# TXTレコードを更新して検証させる
+
+# master node の証明書を置き換える
+scp -F ~/.ssh/config /etc/letsencrypt/live/k8s-m1.igtm.link/fullchain.pem igtm-nvidia:/etc/certs/k8s-m1.igtm.link.fullchain.key
+scp -F ~/.ssh/config /etc/letsencrypt/live/k8s-m1.igtm.link/privkey.pem igtm-nvidia:/etc/certs/k8s-m1.igtm.link.privkey.key
+
+# docker-registry でりぽ
+```
+
+自動化したい...
+https://blog.potproject.net/2019/11/21/k8s-k3s-lets-encrypt-ingress
 
 ### memo
 
