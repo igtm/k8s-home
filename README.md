@@ -12,8 +12,12 @@ Endpoint: k8s-m1.igtm.link:5000
 # /etc/hosts on master node
 127.0.0.1 k8s-m1.igtm.link
 
-# /etc/hosts on some client
+# /etc/hosts on your client
 <master node ip> k8s-m1.igtm.link
+
+# run this command on master node and paste output to kubeconfig on your client
+# (modify server ip to k8s-m1.igtm.link)
+kubectl config view  --raw
 
 # deploy registry container
 kubectl apply -f docker-registry.yaml
@@ -29,7 +33,7 @@ sudo certbot certonly --manual -d k8s-m1.igtm.link --preferred-challenges dns-01
 # TXTレコードを更新して検証させる
 
 # master node の証明書を置き換える
-scp -F ~/.ssh/config /etc/letsencrypt/live/k8s-m1.igtm.link/fullchain.pem igtm-nvidia:/etc/certs/k8s-m1.igtm.link.fullchain.key
+scp -F ~/.ssh/config /etc/letsencrypt/live/k8s-m1.igtm.link/fullchain.pem igtm-nvidia:/etc/certs/k8s-m1.igtm.link.fullchain.crt
 scp -F ~/.ssh/config /etc/letsencrypt/live/k8s-m1.igtm.link/privkey.pem igtm-nvidia:/etc/certs/k8s-m1.igtm.link.privkey.key
 
 # docker-registry でりぽ
