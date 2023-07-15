@@ -4,6 +4,12 @@
 
 [k3s](https://k3s.io/) で構築した
 
+# Installed Apps
+
+- [Registry v2.7](https://hub.docker.com/_/registry)
+- [Algo Workflow v3.4.8](https://github.com/argoproj/argo-workflows/releases/tag/v3.4.8)
+
+
 ### Private docker registry
 
 ```shell
