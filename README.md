@@ -1,4 +1,4 @@
-# おうちk8s
+# おうち k8s
 
 おうちの k8s cluster application たち
 
@@ -8,7 +8,6 @@
 
 - [Registry v2.7](https://hub.docker.com/_/registry)
 - [Algo Workflow v3.4.8](https://github.com/argoproj/argo-workflows/releases/tag/v3.4.8)
-
 
 ### Private docker registry
 
@@ -29,10 +28,16 @@ kubectl config view  --raw
 kubectl apply -f docker-registry.yaml
 ```
 
-- 証明書ファイルは[Let's Encrypt製](https://numb86-tech.hatenablog.com/entry/2020/08/04/223754)
-- [registry dockerを使用](https://qiita.com/yuyakato/items/c5b1b1293c5879e231ab)
+- 証明書ファイルは[Let's Encrypt 製](https://numb86-tech.hatenablog.com/entry/2020/08/04/223754)
+- [registry docker を使用](https://qiita.com/yuyakato/items/c5b1b1293c5879e231ab)
 
-### 証明書の更新(3ヶ月おき)
+### （Deprecated）証明書の更新(3 ヶ月おき)
+
+> **この手順は非推奨です。現在は証明書の取得・更新・配布は自動化されています。**
+>
+> 最新の自動化手順については `copy-certs.md` を参照してください。
+
+旧手順（参考用）:
 
 ```shell
 sudo certbot certonly --manual -d k8s-m1.igtm.link --preferred-challenges dns-01
@@ -45,8 +50,12 @@ scp -F ~/.ssh/config /etc/letsencrypt/live/k8s-m1.igtm.link/privkey.pem igtm-nvi
 # docker-registry でりぽ
 ```
 
-自動化したい...
-https://blog.potproject.net/2019/11/21/k8s-k3s-lets-encrypt-ingress
+# NAS を mount
+
+```
+apt install cifs-utils
+mount -t cifs //<NAS_IP>/external/storage /mnt/nas-storage -o username=<username>,password="******"
+```
 
 ### memo
 
